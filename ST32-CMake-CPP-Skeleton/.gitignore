@@ -1,0 +1,18 @@
+# Ignore everything
+/*
+
+### EXCEPTIONS ###
+
+# Directories
+!builds/
+!docs/
+!includes/
+!platforms/
+!scripts/
+!src/
+
+# Files
+!.gitignore
+!Makefile
+!CMakeLists.txt
+!README.md
