@@ -34,43 +34,77 @@
 //	uint32_t _PortBit;
 //};
 
+void red_task()
+{
+	static Led LedRed(GPIOE, GPIO_Pin_9);
+	LedRed.Toggle();
+}
 
+void green_task()
+{
+	static Led LedGreen (GPIOE, GPIO_Pin_11);
+	LedGreen.Toggle();
+}
+
+void blue_task()
+{
+	static Led LedBlue(GPIOE, GPIO_Pin_8);
+	LedBlue.Toggle();
+}
+
+void orange_task()
+{
+	static Led LedOrange(GPIOE, GPIO_Pin_10);
+	LedOrange.Toggle();
+}
 
 int main()
 {
-	Led LedBlue(GPIOE, GPIO_Pin_8);
-	Led LedRed(GPIOE, GPIO_Pin_9);
-	Led LedOrange(GPIOE, GPIO_Pin_10);
-	Led LedGreen (GPIOE, GPIO_Pin_11);
+	SysTick_Init();
 	
 	Led LedBlue2(GPIOE, GPIO_Pin_12);
 	Led LedRed2(GPIOE, GPIO_Pin_13);
 	Led LedOrange2(GPIOE, GPIO_Pin_14);
 	Led LedGreen2(GPIOE, GPIO_Pin_15);
 	
-	LedRed.On();
-	LedBlue.On();
-	LedOrange.On();
-	LedGreen.On();
+	LedBlue2.Blink();
+	LedRed2.Blink();
+	LedOrange2.Blink();
+	LedGreen2.Blink();
 	
-	LedRed2.Off();
-	LedBlue2.Off();
-	LedOrange2.Off();
-	LedGreen2.Off();
-
+	/* Tasks scheduler drivers */
+	TasksContainter tasks;
 	
+	/* Custom functions to be executed periodically */
+	tasks.AddCustom(&red_task, 0);
+	tasks.AddCustom(&green_task, 10);
+	tasks.AddCustom(&blue_task, 20);
+	tasks.AddCustom(&orange_task, 30);
+	
+	/* Driver's ticks */
+	tasks.AddDriver(&LedRed2, 0);
+	tasks.AddDriver(&LedGreen2, 10);
+	tasks.AddDriver(&LedBlue2, 20);
+	tasks.AddDriver(&LedOrange2, 30);
+	
+	uint32_t PrevMillis = 0;
 	while(true)
 	{
-		LedRed.Toggle();
-		LedBlue.Toggle();
-		LedOrange.Toggle();
-		LedGreen.Toggle();
-		
-		LedRed2.Toggle();
-		LedBlue2.Toggle();
-		LedOrange2.Toggle();
-		LedGreen2.Toggle();
-		
-		for(int i = 0; i<= 800000; i++);
+		if( SysTick_CurrentTicks - PrevMillis >= 1 )	/* is 1ms elapsed */
+		{
+			PrevMillis = SysTick_CurrentTicks;
+			uint32_t start_task_millis, end_task_millis;
+			start_task_millis = SysTick_CurrentTicks;
+			tasks.Tick();
+			end_task_millis = SysTick_CurrentTicks;
+			
+			if( (end_task_millis - start_task_millis) > 1 )
+			{
+				while(true)
+				{
+					int breakpoint = 0;
+				}
+			}
+		}
 	}
 }

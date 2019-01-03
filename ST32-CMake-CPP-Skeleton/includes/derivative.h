@@ -21,6 +21,9 @@
 	#define assert_param(expr) ((void)0U)
 #endif
 
+#include "misc.h"
+#include "ISR.h"
+
 #if defined(stm32f3)
 	/* System files */
 	#include <stm32f3xx.h>
@@ -29,7 +32,6 @@
 	#include <stm32f3xx_ll_bus.h>
 
 #elif defined(stm32f1)
-	#include "misc.h"
 	#include "stm32f10x.h"
 	#include "system_stm32f10x.h"
 	/* Reset and Clock Controller driver */
@@ -41,5 +43,16 @@
 #else
 	#error "No target family specified!"
 #endif/*Target family check*/
+
+
+/* Current SysTick */
+volatile uint32_t SysTick_CurrentTicks;
+void SysTick_Init()
+{
+	/* Configure SysTick */
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq (&RCC_Clocks);
+	(void) SysTick_Config (RCC_Clocks.HCLK_Frequency / 1000);	/* Reload every 1ms */
+}
 
 #endif/*_DERIVATIVE_H_ */

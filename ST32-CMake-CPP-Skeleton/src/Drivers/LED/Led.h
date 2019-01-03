@@ -14,7 +14,7 @@
 	| |___| |___| |_| |  | |_) / ___ \ ___) | |___
 	|_____|_____|____/   |____/_/   \_\____/|_____|
 */
-class Led : IDriverTimed
+class Led : public IDriverTimed
 {
 	enum class LedWorkMode
 	{
@@ -58,15 +58,13 @@ public:
 	void Toggle()
 	{
 		GPIO_WriteBit(this->_PortRegister, this->_PortBit, (BitAction) !GPIO_ReadOutputDataBit(this->_PortRegister, this->_PortBit));
-		this->mode = LedWorkMode::NORMAL;
 	}
 	
 	void Blink()
 	{
 		this->mode = LedWorkMode::BLINK;
 	}
-
-protected:
+	
 	void Tick() override
 	{
 		if(mode == LedWorkMode::BLINK)

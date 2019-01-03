@@ -11,24 +11,10 @@
 class IDriverTimed
 {
 public:
-	void ExecuteTasks()
-	{
-	
-	}
-	
-	void AddDriver(uint32_t TickPeriodMillis)
-	{
-	
-	}
-	
-	void RemoveDriver()
-	{
-	
-	}
-	
+	virtual void Tick() = 0;
 	
 protected:
-	virtual void Tick() = 0;
+
 private:
 };
 
