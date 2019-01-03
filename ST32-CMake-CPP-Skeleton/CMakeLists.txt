@@ -19,13 +19,15 @@ SET(CMAKE_CXX_STANDARD 11)
 #SET(CHIP        "STM32F303xC")
 #SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
 
-SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
-SET(CPU         "cortex-m3")
-SET(ARCH_NAME   "arm")
-SET(ARCH_VER    "v7e-m")
-SET(FAMILY      "stm32f1")
-SET(CHIP        "STM32F103xE")
-SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
+SET(ROOT_PROJ       ${CMAKE_CURRENT_SOURCE_DIR})
+SET(CPU             "cortex-m3")
+SET(ARCH_NAME       "arm")
+SET(ARCH_VER        "v7e-m")
+SET(FAMILY          "stm32f1")
+SET(CHIP            "STM32F103xE")
+SET(ARCH            "${ARCH_NAME}${ARCH_VER}")
+# Check stm32f10x.h to get correct flash density */
+SET(FLASH_DENSITY   "STM32F10X_LD")
 
 ####################################################################
 
@@ -55,17 +57,15 @@ add_definitions(-DFAMILY=${FAMILY})
 add_definitions(-DCHIP=${CHIP})
 add_definitions(-D${CHIP})
 add_definitions(-D${FAMILY})
+add_definitions(-D${FLASH_DENSITY})
 add_definitions(-DUSE_FULL_ASSERT)
-add_definitions(-DUSE_FULL_LL_DRIVER)
-add_definitions(-USE_HAL_DRIVER)
-add_definitions(-DHSE_VALUE=8000000)
-add_definitions(-DHSE_STARTUP_TIMEOUT=100)
-add_definitions(-DLSE_STARTUP_TIMEOUT=5000)
-add_definitions(-DLSE_VALUE=32768)
-add_definitions(-DHSI_VALUE=8000000)
-add_definitions(-DLSI_VALUE=40000)
-add_definitions(-DDD_VALUE=3300)
-add_definitions(-DPREFETCH_ENABLE=1)
+add_definitions(-DUSE_STDPERIPH_DRIVER)
+#add_definitions(-DHSE_VALUE=8000000)
+#add_definitions(-DLSE_STARTUP_TIMEOUT=5000)
+#add_definitions(-DLSE_VALUE=32768)
+#add_definitions(-DLSI_VALUE=40000)
+#add_definitions(-DDD_VALUE=3300)
+#add_definitions(-DPREFETCH_ENABLE=1)
 
 # Compilation flags
 add_compile_options(-mcpu=${CPU})
@@ -90,8 +90,10 @@ SET(CMAKE_CXX_FLAGS_INIT "-std=c++11")
 SET(CMAKE_C_FLAGS_INIT "-std=gnu99")
 
 ################################## Source code ###############################################################
+# Retrieve correct startup ASM file name:
+string(TOLOWER ${FLASH_DENSITY} FLASH_DENSITY_LOWER)
 # Retrieve all sources # "platforms/${FAMILY}/Startup/*.s"
-file(GLOB_RECURSE SOURCES  "platforms/${FAMILY}/Startup/*.s" "src/*.cpp"  "src/*.c" "platforms/${FAMILY}/*.c")
+file(GLOB_RECURSE SOURCES  "platforms/${FAMILY}/Startup/startup_${FLASH_DENSITY_LOWER}.s" "platforms/${FAMILY}/*.c" "includes/*.c" "includes/*.cpp" "src/*.cpp"  "src/*.c" )
 
 #Retrieve all locations of headers
 file(GLOB_RECURSE HEADERS "includes/*.h"  "src/*.h" "platforms/${FAMILY}/*.h")
@@ -107,7 +109,7 @@ link_directories(${ARM_LIB})
 
 set(EXE_NAME "${PROJECT_NAME}_${CHIP}")
 add_executable(${EXE_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
-set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI} --specs=nano.specs -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI} --specs=nosys.specs -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
 
 # Libs and external dependencies
 target_link_libraries(${EXE_NAME}.elf -lc -lm -lnosys -lstdc++)

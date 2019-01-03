@@ -1,3 +1,7 @@
+/**
+ * All drivers shall be included through this file!
+ */
+
 #ifndef _DERIVATIVE_H_
 #define _DERIVATIVE_H_
 
@@ -25,13 +29,17 @@
 	#include <stm32f3xx_ll_bus.h>
 
 #elif defined(stm32f1)
-/* System files */
-	#include <stm32f1xx.h>
-	/* Low-Layer Drivers */
-	#include <stm32f1xx_ll_gpio.h>
-	#include <stm32f1xx_ll_bus.h>
+	#include "misc.h"
+	#include "stm32f10x.h"
+	#include "system_stm32f10x.h"
+	/* Reset and Clock Controller driver */
+	#include <stm32f10x_rcc.h>
+	/* General Purpose Input/Output Driver */
+	#include "stm32f10x_gpio.h"
+	
+	
 #else
 	#error "No target family specified!"
-#endif	/* Target family check */
+#endif/*Target family check*/
 
-#endif /*_DERIVATIVE_H_ */
+#endif/*_DERIVATIVE_H_ */
