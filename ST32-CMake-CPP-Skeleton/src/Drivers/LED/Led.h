@@ -14,7 +14,7 @@
 	| |___| |___| |_| |  | |_) / ___ \ ___) | |___
 	|_____|_____|____/   |____/_/   \_\____/|_____|
 */
-class Led : public IDriverTimed
+class Led : public virtual IDriverTimed
 {
 	enum class LedWorkMode
 	{
@@ -28,7 +28,20 @@ public:
 		assert_param( IS_GPIO_PIN(_PortBit) );
 		
 		/* Enable Clock on selected port */
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+		if( this->_PortRegister == GPIOA )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+		else if( this->_PortRegister == GPIOB )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+		else if( this->_PortRegister == GPIOC )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+		else if( this->_PortRegister == GPIOD )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+		else if( this->_PortRegister == GPIOE )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+		else if( this->_PortRegister == GPIOF )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
+		else if( this->_PortRegister == GPIOG )
+			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
 		
 		/* GPIO Pin configuration */
 		GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -81,6 +94,7 @@ private:
 	GPIO_TypeDef *_PortRegister;
 	uint16_t _PortBit;
 	LedWorkMode mode = LedWorkMode::NORMAL;
+	
 };/* Class */
 
 #endif //DRIVERS_LEDBASE_H

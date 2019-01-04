@@ -13,20 +13,38 @@
 
 class TasksContainter
 {
-	enum class TaskSchedulerStatus
-	{
-		RUNNING,
-		STANDBY
-	};
-	
 	typedef struct Task
 	{
+		enum class TaskStatus
+		{
+			RUNNING,
+			SUSPENDED,
+		};
+		
 		uint16_t id;
 		uint32_t ExecutionIntervalMillis;
 		uint32_t LastExecutionMillis = 0;
+		bool IsCustom;
+		
 		void (*ptr2func)() = nullptr;
 		IDriverTimed *ptr2driver = nullptr;
-		bool IsCustom;
+		
+		TaskStatus status = TaskStatus::RUNNING;
+		
+		bool IsSuspended()
+		{
+			return (status == TaskStatus::SUSPENDED);
+		}
+		
+		void Suspend()
+		{
+			status = TaskStatus::SUSPENDED;
+		}
+		
+		void Resume()
+		{
+			status = TaskStatus::RUNNING;
+		}
 		
 	}task_t;
 	
@@ -35,6 +53,10 @@ public:
 	{
 		for(auto it = _TasksList.begin(); it !=_TasksList.end(); ++it)
 		{
+			/* Ignore tasks which are paused */
+			if(it.base()->IsSuspended())
+				continue;
+			
 			if( ( it.base()->ExecutionIntervalMillis == 0) ||
 				( SysTick_CurrentTicks - it.base()->LastExecutionMillis >= it.base()->ExecutionIntervalMillis)
 			  )
@@ -79,7 +101,33 @@ public:
 	
 	void Remove( void *opaque_task)
 	{
+		/// TODO: Implement
+	}
 	
+	task_t *GetTaskByPtr( void (*ptr2func)() )
+	{
+		for(auto it = _TasksList.begin(); it !=_TasksList.end(); ++it)
+		{
+			if(it.base()->IsCustom && it.base()->ptr2func != nullptr)
+			{
+				if( it.base()->ptr2func == ptr2func )
+					return it.base();
+			}
+		}
+		return nullptr;
+	}
+	
+	task_t *GetTaskByPtr( IDriverTimed *ptr2driver )
+	{
+		for(auto it = _TasksList.begin(); it !=_TasksList.end(); ++it)
+		{
+			if(!it.base()->IsCustom && it.base()->ptr2driver != nullptr)
+			{
+				if( it.base()->ptr2driver == ptr2driver )
+					return it.base();
+			}
+		}
+		return nullptr;
 	}
 	
 private:

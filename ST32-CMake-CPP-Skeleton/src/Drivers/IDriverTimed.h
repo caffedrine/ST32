@@ -10,7 +10,7 @@
 class IDriverTimed
 {
 public:
-	virtual void Tick() {}
+	virtual void Tick() = 0;
 };
 
 
