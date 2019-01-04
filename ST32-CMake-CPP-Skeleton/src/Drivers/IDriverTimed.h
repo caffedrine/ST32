@@ -5,17 +5,12 @@
 #ifndef _IDRIVERTIMED_H
 #define _IDRIVERTIMED_H
 
-#include "derivative.h"
-#include "IDriver.h"
+#include <Derivative.h>
 
 class IDriverTimed
 {
 public:
-	virtual void Tick() = 0;
-	
-protected:
-
-private:
+	virtual void Tick() {}
 };
 
 

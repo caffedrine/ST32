@@ -6,7 +6,7 @@ SET(CMAKE_SYSTEM_VERSION 1)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-set(PROJECT_NAME FixtureTACO)
+set(PROJECT_NAME SkeletonCPP)
 PROJECT(${PROJECT_NAME} C CXX ASM)
 SET(CMAKE_CXX_STANDARD 11)
 
@@ -47,7 +47,6 @@ set(OBJCOPY             ${TOOLCHAIN_PATH}arm-none-eabi-objcopy)
 set(OBJDUMP             ${TOOLCHAIN_PATH}arm-none-eabi-objdump)
 set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
 set(GDB                 ${TOOLCHAIN_PATH}arm-none-eabi-gdb)
-set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
 
 # ST-Link binaries. Used for uploading
 SET(ST_LINK_BIN "")
@@ -73,11 +72,12 @@ add_compile_options(-mcpu=${CPU})
 add_compile_options(-mthumb)
 add_compile_options(${FPU})
 add_compile_options(${FLOAT_ABI})
-#add_compile_options(-Og)
 add_compile_options(-Wall)
 add_compile_options(-fdata-sections)
 add_compile_options(-ffunction-sections)
+#add_compile_options(-Os)
 # Only for debugging
+add_compile_options(-O0)
 #add_compile_options(-g -gdwarf-2)
 add_compile_options(-fno-exceptions)
 
@@ -132,6 +132,9 @@ add_custom_command(TARGET "${EXE_NAME}.elf" POST_BUILD
         COMMENT "Objcopy: Copying executables to build/"
 
         # Display sizes
+        COMMAND ${SIZE} --format=sysv ${EXE_NAME}.elf ${EXE_NAME}.hex
+        COMMENT "Invoking: Cross ARM GNU Print Size"
+
         COMMAND ${SIZE} --format=berkeley ${EXE_NAME}.elf ${EXE_NAME}.hex
         COMMENT "Invoking: Cross ARM GNU Print Size"
         )

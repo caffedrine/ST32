@@ -5,22 +5,13 @@
 #ifndef _DERIVATIVE_H_
 #define _DERIVATIVE_H_
 
-/* Compile time message */
-#define STRING2(x) #x
-#define STRING(x) STRING2(x)
-// #pragma message(STRING(Target family: FAMILY))
-
-/* Convert preprocessor to string */
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-#define AT __FILE__ ":" TOSTRING(__LINE__)
-
 #ifdef  USE_FULL_ASSERT
 	#include "stm32_assert.h"
 #else
 	#define assert_param(expr) ((void)0U)
 #endif
 
+/* Common cross-compile headers */
 #include "misc.h"
 #include "ISR.h"
 

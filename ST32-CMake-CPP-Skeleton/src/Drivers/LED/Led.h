@@ -5,7 +5,7 @@
 #ifndef DRIVERS_LEDBASE_H
 #define DRIVERS_LEDBASE_H
 
-#include "derivative.h"
+#include <Derivative.h>
 #include "IDriverTimed.h"
 
 /*	 _     _____ ____     ____    _    ____  _____
@@ -24,6 +24,9 @@ class Led : public IDriverTimed
 public:
 	Led(GPIO_TypeDef *LedPortRegister, uint16_t LedPortBit) : _PortRegister(LedPortRegister), _PortBit(LedPortBit)
 	{
+		assert_param( IS_GPIO_ALL_PERIPH(_PortRegister));
+		assert_param( IS_GPIO_PIN(_PortBit) );
+		
 		/* Enable Clock on selected port */
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
 		
