@@ -6,7 +6,7 @@ SET(CMAKE_SYSTEM_VERSION 1)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-set(PROJECT_NAME FixtureTACO)
+set(PROJECT_NAME SkeletonC)
 PROJECT(${PROJECT_NAME} C CXX ASM)
 
 ###################### CHIP CONFIGURATION ##########################
@@ -18,13 +18,15 @@ PROJECT(${PROJECT_NAME} C CXX ASM)
 #SET(CHIP        "STM32F303xC")
 #SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
 
-SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
-SET(CPU         "cortex-m3")
-SET(ARCH_NAME   "arm")
-SET(ARCH_VER    "v7e-m")
-SET(FAMILY      "stm32f1")
-SET(CHIP        "STM32F103xE")
-SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
+SET(ROOT_PROJ       ${CMAKE_CURRENT_SOURCE_DIR})
+SET(CPU             "cortex-m3")
+SET(ARCH_NAME       "arm")
+SET(ARCH_VER        "v7e-m")
+SET(FAMILY          "stm32f1")
+SET(CHIP            "STM32F103xE")
+SET(ARCH            "${ARCH_NAME}${ARCH_VER}")
+# Check stm32f10x.h to get correct flash density */
+SET(FLASH_DENSITY   "STM32F10X_LD")
 
 ####################################################################
 
@@ -44,7 +46,6 @@ set(OBJCOPY             ${TOOLCHAIN_PATH}arm-none-eabi-objcopy)
 set(OBJDUMP             ${TOOLCHAIN_PATH}arm-none-eabi-objdump)
 set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
 set(GDB                 ${TOOLCHAIN_PATH}arm-none-eabi-gdb)
-set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
 
 # ST-Link binaries. Used for uploading
 SET(ST_LINK_BIN "")
@@ -54,17 +55,15 @@ add_definitions(-DFAMILY=${FAMILY})
 add_definitions(-DCHIP=${CHIP})
 add_definitions(-D${CHIP})
 add_definitions(-D${FAMILY})
+add_definitions(-D${FLASH_DENSITY})
 add_definitions(-DUSE_FULL_ASSERT)
-add_definitions(-DUSE_FULL_LL_DRIVER)
-add_definitions(-USE_HAL_DRIVER)
-add_definitions(-DHSE_VALUE=8000000)
-add_definitions(-DHSE_STARTUP_TIMEOUT=100)
-add_definitions(-DLSE_STARTUP_TIMEOUT=5000)
-add_definitions(-DLSE_VALUE=32768)
-add_definitions(-DHSI_VALUE=8000000)
-add_definitions(-DLSI_VALUE=40000)
-add_definitions(-DDD_VALUE=3300)
-add_definitions(-DPREFETCH_ENABLE=1)
+add_definitions(-DUSE_STDPERIPH_DRIVER)
+#add_definitions(-DHSE_VALUE=8000000)
+#add_definitions(-DLSE_STARTUP_TIMEOUT=5000)
+#add_definitions(-DLSE_VALUE=32768)
+#add_definitions(-DLSI_VALUE=40000)
+#add_definitions(-DDD_VALUE=3300)
+#add_definitions(-DPREFETCH_ENABLE=1)
 
 # Compilation flags
 add_compile_options(-mcpu=${CPU})
@@ -72,12 +71,14 @@ add_compile_options(-mcpu=${CPU})
 add_compile_options(-mthumb)
 add_compile_options(${FPU})
 add_compile_options(${FLOAT_ABI})
-#add_compile_options(-Og)
 add_compile_options(-Wall)
 add_compile_options(-fdata-sections)
 add_compile_options(-ffunction-sections)
+#add_compile_options(-Os)
 # Only for debugging
+add_compile_options(-O0)
 #add_compile_options(-g -gdwarf-2)
+add_compile_options(-fno-exceptions)
 
 
 # Linker script path
@@ -88,8 +89,10 @@ SET(CMAKE_CXX_FLAGS "-std=c++11")
 SET(CMAKE_C_FLAGS "-std=gnu99")
 
 ################################## Source code ###############################################################
+# Retrieve correct startup ASM file name:
+string(TOLOWER ${FLASH_DENSITY} FLASH_DENSITY_LOWER)
 # Retrieve all sources # "platforms/${FAMILY}/Startup/*.s"
-file(GLOB_RECURSE SOURCES  "platforms/${FAMILY}/Startup/*.s" "src/*.cpp"  "src/*.c" "platforms/${FAMILY}/*.c")
+file(GLOB_RECURSE SOURCES  "platforms/${FAMILY}/Startup/startup_${FLASH_DENSITY_LOWER}.s" "platforms/${FAMILY}/*.c" "includes/*.c" "includes/*.cpp" "src/*.cpp"  "src/*.c" )
 
 #Retrieve all locations of headers
 file(GLOB_RECURSE HEADERS "includes/*.h"  "src/*.h" "platforms/${FAMILY}/*.h")
@@ -108,7 +111,7 @@ add_executable(${EXE_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI} --specs=nosys.specs -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
 
 # Libs and external dependencies
-target_link_libraries(${EXE_NAME}.elf -lc -lm -lnosys)
+target_link_libraries(${EXE_NAME}.elf -lc -lm -lnosys -lstdc++)
 
 # Outputs
 set(ELF_FILE ${PROJECT_BINARY_DIR}/${EXE_NAME}.elf)
@@ -125,8 +128,12 @@ add_custom_command(TARGET "${EXE_NAME}.elf" POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${ELF_FILE} "${ROOT_PROJ}/builds/${CHIP}/${EXE_NAME}.elf"
         COMMAND ${CMAKE_COMMAND} -E copy ${HEX_FILE} "${ROOT_PROJ}/builds/${CHIP}/${EXE_NAME}.hex"
         COMMAND ${CMAKE_COMMAND} -E copy ${BIN_FILE} "${ROOT_PROJ}/builds/${CHIP}/${EXE_NAME}.bin"
+        COMMENT "Objcopy: Copying executables to build/"
 
         # Display sizes
+        COMMAND ${SIZE} --format=sysv ${EXE_NAME}.elf ${EXE_NAME}.hex
+        COMMENT "Invoking: Cross ARM GNU Print Size"
+
         COMMAND ${SIZE} --format=berkeley ${EXE_NAME}.elf ${EXE_NAME}.hex
         COMMENT "Invoking: Cross ARM GNU Print Size"
         )

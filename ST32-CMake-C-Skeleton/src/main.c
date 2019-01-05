@@ -1,33 +1,62 @@
-#include "derivative.h"
+#include <Derivative.h>
+#include "SysTick.h"
 
-#define PIN_PORT	GPIOE
-#define PIN_BIT		LL_GPIO_PIN_9
+#define LED_PORT	GPIOE
+#define LED_PIN		GPIO_Pin_9
 
-void InitPin()
+void Led_Init(GPIO_TypeDef *LedPortRegister, uint16_t LedPortBit)
 {
-	/* GPIO Ports Clock Enable */
-#ifdef stm32f3
-	LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
-#elif defined(stm32f1)
-	LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOE);
-#endif
+	assert_param( IS_GPIO_ALL_PERIPH(LedPortRegister));
+	assert_param( IS_GPIO_PIN(LedPortBit) );
 	
-	LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = PIN_BIT;
-	GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-	GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-	GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-	GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
-	LL_GPIO_Init(PIN_PORT, &GPIO_InitStruct);
+	/* Enable Clock on selected port */
+	if( LedPortRegister == GPIOA )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	else if( LedPortRegister == GPIOB )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	else if( LedPortRegister == GPIOC )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	else if( LedPortRegister == GPIOD )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+	else if( LedPortRegister == GPIOE )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+	else if( LedPortRegister == GPIOF )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
+	else if( LedPortRegister == GPIOG )
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
+	
+	/* GPIO Pin configuration */
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	GPIO_InitStruct.GPIO_Pin = LedPortBit;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_10MHz;
+	GPIO_Init(LedPortRegister, &GPIO_InitStruct);
 }
 
 int main()
 {
-	InitPin();
+	SysTick_Init(1000);
+	Led_Init(LED_PORT, LED_PIN);
 	
-	while(1)
+	uint32_t PrevMillis = 0;
+	while(true)
 	{
-		LL_GPIO_TogglePin(PIN_PORT, LL_GPIO_PIN_9);
-		for(int i = 0; i<= 200000; i++);
+		if( g_SysTick_CurrentMillis - PrevMillis >= 1000 )	/* is 1ms elapsed */
+		{
+			PrevMillis = g_SysTick_CurrentMillis;
+			uint32_t start_task_millis, end_task_millis;
+			
+			start_task_millis = g_SysTick_CurrentMillis;
+			GPIO_WriteBit(LED_PORT, LED_PIN, (BitAction) !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
+			end_task_millis = g_SysTick_CurrentMillis;
+
+			if( (end_task_millis - start_task_millis) > 1 )
+			{
+				while(true)
+				{
+					;
+				}
+			}
+		}
 	}
 }
