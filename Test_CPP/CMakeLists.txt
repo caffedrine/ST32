@@ -8,7 +8,6 @@ SET(CMAKE_SYSTEM_VERSION 1)
 # Project name
 set(PROJECT_NAME TestCPP)
 PROJECT(${PROJECT_NAME} C CXX ASM)
-SET(CMAKE_CXX_STANDARD 11)
 
 ###################### CHIP CONFIGURATION ##########################
 #SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
@@ -86,8 +85,8 @@ add_compile_options(-fno-exceptions)
 file(GLOB_RECURSE LINKER_SCRIPT ${ROOT_PROJ}/platforms/${FAMILY}/Linker/*.ld)
 
 # Variables initialized first time
-SET(CMAKE_CXX_FLAGS_INIT "-std=c++11")
-SET(CMAKE_C_FLAGS_INIT "-std=gnu99")
+SET(CMAKE_CXX_FLAGS "-std=c++11")
+SET(CMAKE_C_FLAGS "-std=gnu99")
 
 ################################## Source code ###############################################################
 # Retrieve correct startup ASM file name:
