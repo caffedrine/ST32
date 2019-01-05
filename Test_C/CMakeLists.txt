@@ -105,7 +105,7 @@ link_directories(${ARM_LIB})
 
 set(EXE_NAME "${PROJECT_NAME}_${CHIP}")
 add_executable(${EXE_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
-set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI} --specs=nano.specs -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI} --specs=nosys.specs -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
 
 # Libs and external dependencies
 target_link_libraries(${EXE_NAME}.elf -lc -lm -lnosys)

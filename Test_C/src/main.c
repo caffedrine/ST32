@@ -30,4 +30,6 @@ int main()
 		LL_GPIO_TogglePin(PIN_PORT, LL_GPIO_PIN_9);
 		for(int i = 0; i<= 200000; i++);
 	}
+	
+	return 0;
 }
