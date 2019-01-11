@@ -7,12 +7,12 @@
 /* please refer to the startup file (startup_stm32f3xx.s).                    */
 /******************************************************************************/
 
-///**
-// *  @brief On reset handler
-// */
+/**
+ *  @brief On reset handler
+ */
 //void Reset_Handler(void)
 //{
-//
+//	int breakpoint = 1;
 //}
 
 /**
@@ -86,8 +86,10 @@ void PendSV_Handler(void)
 /**
   * @brief This function handles System tick timer.
   */
+
 void SysTick_Handler(void)
 {
+	g_SysTick_CurrentMillis++;
 }
 
 /******************************************************************************/
