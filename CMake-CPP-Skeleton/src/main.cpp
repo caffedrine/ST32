@@ -102,9 +102,10 @@ int main()
 		{
 			PrevMillis = SysTick_CurrentTicks;
 			uint32_t start_task_millis, end_task_millis;
-			
 			start_task_millis = SysTick_CurrentTicks;
-			tasks->Tick();
+			{
+				tasks->Tick();
+			}
 			end_task_millis = SysTick_CurrentTicks;
 
 			if( (end_task_millis - start_task_millis) > 1 )
@@ -115,5 +116,5 @@ int main()
 				}
 			}
 		}
-	}
-}
+	}/*class*/
+}/*main*/

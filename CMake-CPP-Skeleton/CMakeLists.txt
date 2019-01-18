@@ -10,23 +10,24 @@ set(PROJECT_NAME SkeletonCPP)
 PROJECT(${PROJECT_NAME} C CXX ASM)
 
 ###################### CHIP CONFIGURATION ##########################
-#SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
-#SET(CPU         "cortex-m4")
-#SET(ARCH_NAME   "arm")
-#SET(ARCH_VER    "v7e-m")
-#SET(FAMILY      "stm32f3")
-#SET(CHIP        "STM32F303xC")
-#SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
+SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
+SET(CPU         "cortex-m4")
+SET(ARCH_NAME   "arm")
+SET(ARCH_VER    "v7e-m")
+SET(FAMILY      "stm32f3")
+SET(CHIP        "STM32F303xC")
+SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
+SET(FLASH_DENSITY   "STM32F30x")
 
-SET(ROOT_PROJ       ${CMAKE_CURRENT_SOURCE_DIR})
-SET(CPU             "cortex-m3")
-SET(ARCH_NAME       "arm")
-SET(ARCH_VER        "v7e-m")
-SET(FAMILY          "stm32f1")
-SET(CHIP            "STM32F103xE")
-SET(ARCH            "${ARCH_NAME}${ARCH_VER}")
-# Check stm32f10x.h to get correct flash density */
-SET(FLASH_DENSITY   "STM32F10X_LD")
+#SET(ROOT_PROJ       ${CMAKE_CURRENT_SOURCE_DIR})
+#SET(CPU             "cortex-m3")
+#SET(ARCH_NAME       "arm")
+#SET(ARCH_VER        "v7e-m")
+#SET(FAMILY          "stm32f1")
+#SET(CHIP            "STM32F103xE")
+#SET(ARCH            "${ARCH_NAME}${ARCH_VER}")
+## Check stm32f10x.h to get correct flash density */
+#SET(FLASH_DENSITY   "STM32F10X_LD")
 
 ####################################################################
 
@@ -77,7 +78,7 @@ add_compile_options(-ffunction-sections)
 #add_compile_options(-Os)
 # Only for debugging
 add_compile_options(-O0)
-#add_compile_options(-g -gdwarf-2)
+add_compile_options(-g -gdwarf-2)
 add_compile_options(-fno-exceptions)
 
 

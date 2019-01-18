@@ -29,24 +29,24 @@ public:
 		
 		/* Enable Clock on selected port */
 		if( this->_PortRegister == GPIOA )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 		else if( this->_PortRegister == GPIOB )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 		else if( this->_PortRegister == GPIOC )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 		else if( this->_PortRegister == GPIOD )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 		else if( this->_PortRegister == GPIOE )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
 		else if( this->_PortRegister == GPIOF )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF, ENABLE);
 		else if( this->_PortRegister == GPIOG )
-			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
+			RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOG, ENABLE);
 		
 		/* GPIO Pin configuration */
 		GPIO_InitTypeDef GPIO_InitStruct = {0};
 		GPIO_InitStruct.GPIO_Pin = _PortBit;
-		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
 		GPIO_InitStruct.GPIO_Speed = GPIO_Speed_10MHz;
 		GPIO_Init(_PortRegister, &GPIO_InitStruct);
 		
