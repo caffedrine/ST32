@@ -19,11 +19,12 @@
 #include "ISR.h"
 
 #if defined(stm32f3)
-	/* System files */
-	#include <stm32f3xx.h>
-	/* Low-Layer Drivers */
-	#include <stm32f3xx_ll_gpio.h>
-	#include <stm32f3xx_ll_bus.h>
+	#include "stm32f30x.h"
+	#include "system_stm32f30x.h"
+/* Reset and Clock Controller driver */
+	#include <stm32f30x_rcc.h>
+/* General Purpose Input/Output Driver */
+	#include "stm32f30x_gpio.h"
 
 #elif defined(stm32f1)
 	#include "stm32f10x.h"
