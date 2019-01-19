@@ -43,4 +43,6 @@
 /* Current SysTick */
 volatile uint32_t g_SysTick_CurrentMillis;
 
+#define DEBUG
+
 #endif/*_DERIVATIVE_H_ */

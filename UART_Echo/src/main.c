@@ -17,17 +17,17 @@ void Led_Init(GPIO_TypeDef *LedPortRegister, uint16_t LedPortBit)
     if( LedPortRegister == GPIOA )
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     else if( LedPortRegister == GPIOB )
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     else if( LedPortRegister == GPIOC )
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
     else if( LedPortRegister == GPIOD )
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
     else if( LedPortRegister == GPIOE )
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
     else if( LedPortRegister == GPIOF )
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
     else if( LedPortRegister == GPIOG )
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
     
     /* GPIO Pin configuration */
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -54,8 +54,8 @@ int main()
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
     Printf_Init(DEBUG_UART, DEBUG_UART_BAUD);
+    
     uint32_t PrevMillis = 0;
     while( true )
     {
@@ -73,7 +73,7 @@ int main()
                     USART_ClearFlag(DEBUG_UART, USART_FLAG_RXNE);
                     /* Send back echo */
                     printf("0x%02x ", RecvByte);
-    
+                    
                     GPIO_WriteBit(LED_PORT, LED_PIN, Bit_RESET);
                 }
             }
