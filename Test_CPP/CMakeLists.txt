@@ -6,27 +6,28 @@ SET(CMAKE_SYSTEM_VERSION 1)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-set(PROJECT_NAME TestCPP)
+set(PROJECT_NAME SkeletonC)
 PROJECT(${PROJECT_NAME} C CXX ASM)
 
 ###################### CHIP CONFIGURATION ##########################
-#SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
-#SET(CPU         "cortex-m4")
-#SET(ARCH_NAME   "arm")
-#SET(ARCH_VER    "v7e-m")
-#SET(FAMILY      "stm32f3")
-#SET(CHIP        "STM32F303xC")
-#SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
+SET(ROOT_PROJ   ${CMAKE_CURRENT_SOURCE_DIR})
+SET(CPU         "cortex-m4")
+SET(ARCH_NAME   "arm")
+SET(ARCH_VER    "v7e-m")
+SET(FAMILY      "stm32f3")
+SET(CHIP        "STM32F303xC")
+SET(ARCH        "${ARCH_NAME}${ARCH_VER}")
+SET(FLASH_DENSITY   "STM32F30x")
 
-SET(ROOT_PROJ       ${CMAKE_CURRENT_SOURCE_DIR})
-SET(CPU             "cortex-m3")
-SET(ARCH_NAME       "arm")
-SET(ARCH_VER        "v7e-m")
-SET(FAMILY          "stm32f1")
-SET(CHIP            "STM32F103xE")
-SET(ARCH            "${ARCH_NAME}${ARCH_VER}")
-# Check stm32f10x.h to get correct flash density */
-SET(FLASH_DENSITY   "STM32F10X_LD")
+#SET(ROOT_PROJ       ${CMAKE_CURRENT_SOURCE_DIR})
+#SET(CPU             "cortex-m3")
+#SET(ARCH_NAME       "arm")
+#SET(ARCH_VER        "v7e-m")
+#SET(FAMILY          "stm32f1")
+#SET(CHIP            "STM32F103xE")
+#SET(ARCH            "${ARCH_NAME}${ARCH_VER}")
+## Check stm32f10x.h to get correct flash density */
+#SET(FLASH_DENSITY   "STM32F10X_LD")
 
 ####################################################################
 
@@ -67,13 +68,13 @@ add_definitions(-DUSE_STDPERIPH_DRIVER)
 
 # Compilation flags
 add_compile_options(-mcpu=${CPU})
+#add_compile_options(-march=${ARCH})
 add_compile_options(-mthumb)
 add_compile_options(${FPU})
 add_compile_options(${FLOAT_ABI})
 add_compile_options(-Wall)
 add_compile_options(-fdata-sections)
 add_compile_options(-ffunction-sections)
-# Disable optimizations when debugging
 #add_compile_options(-Os)
 # Only for debugging
 add_compile_options(-O0)
@@ -108,10 +109,10 @@ link_directories(${ARM_LIB})
 
 set(EXE_NAME "${PROJECT_NAME}_${CHIP}")
 add_executable(${EXE_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
-set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI}  -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -mthumb ${FPU} ${FLOAT_ABI} --specs=nosys.specs -T${LINKER_SCRIPT} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref -Wl,--gc-sections")
 
 # Libs and external dependencies
-target_link_libraries(${EXE_NAME}.elf)
+target_link_libraries(${EXE_NAME}.elf -lc -lm -lnosys -lstdc++)
 
 # Outputs
 set(ELF_FILE ${PROJECT_BINARY_DIR}/${EXE_NAME}.elf)

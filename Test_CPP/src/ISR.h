@@ -4,7 +4,7 @@
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
 #include <Derivative.h>
 
@@ -20,7 +20,7 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 
 /* Systick */
-extern volatile uint32_t SysTick_CurrentTicks;
+extern volatile uint32_t g_SysTick_CurrentMillis;
 
 #ifdef __cplusplus
 }

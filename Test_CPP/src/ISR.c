@@ -89,7 +89,7 @@ void PendSV_Handler(void)
 
 void SysTick_Handler(void)
 {
-	SysTick_CurrentTicks++;
+	g_SysTick_CurrentMillis++;
 }
 
 /******************************************************************************/
