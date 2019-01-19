@@ -75,19 +75,19 @@ int main()
 			{
 				GPIO_WriteBit(LED_PORT, LED_PIN, (BitAction) !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
 				{
-					static int i = 0;
-					printf("%d\r\n", i++);
+					
+					/* Wait for a char to be available on RX buffer */
+					while( USART_GetFlagStatus(DEBUG_UART, USART_FLAG_RXNE) == RESET );
+					uint16_t RecvByte = USART_ReceiveData(DEBUG_UART);
+					
+					/* Send back echo */
+					//printf("0x%02x ", RecvByte);
+					USART_SendData(DEBUG_UART, RecvByte);
+					while( USART_GetFlagStatus(DEBUG_UART, USART_FLAG_TC) == RESET );
 				}
 			}
 			end_task_millis = g_SysTick_CurrentMillis;
-
-			if( (end_task_millis - start_task_millis) > 1 )
-			{
-				while(true)
-				{
-					;
-				}
-			}
+			
 		}
 	}/*while*/
 }/*Main*/

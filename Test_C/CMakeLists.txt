@@ -6,7 +6,7 @@ SET(CMAKE_SYSTEM_VERSION 1)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-set(PROJECT_NAME SkeletonC)
+set(PROJECT_NAME Test_C)
 PROJECT(${PROJECT_NAME} C CXX ASM)
 
 ###################### CHIP CONFIGURATION ##########################
