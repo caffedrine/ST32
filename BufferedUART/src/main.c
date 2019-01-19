@@ -56,7 +56,7 @@ int main()
 	/* Init UART */
 	USART_InitTypeDef uart_cfg;
 	USART_StructInit(&uart_cfg);
-	uart_cfg.USART_BaudRate = 9600;
+	uart_cfg.USART_BaudRate = 115200;
 	USART_Init(serial, &uart_cfg);
 	/* Enable UARt channel */
 	USART_Cmd(serial, ENABLE);
@@ -64,7 +64,7 @@ int main()
 	uint32_t PrevMillis = 0;
 	while( true )
 	{
-		if( g_SysTick_CurrentMillis - PrevMillis >= 1000 )
+		if( g_SysTick_CurrentMillis - PrevMillis >= 100 )
 		{
 			PrevMillis = g_SysTick_CurrentMillis;
 			uint32_t start_task_millis, end_task_millis;
@@ -72,14 +72,10 @@ int main()
 			{
 				GPIO_WriteBit(LED_PORT, LED_PIN, Bit_SET);
 				{
-					/* Send one byte */
-					for(uint8_t i = 'A'; i <= 'z'; i++)
-					{
-						/* Write data to send buffer */
-						USART_SendData(serial, i);
-						/* Wait for char to be send */
-						while(USART_GetFlagStatus(serial, USART_FLAG_TC) == RESET);
-					}
+					/* Write data to send buffer */
+					USART_SendData(serial, 0x0F);
+					/* Wait for char to be send */
+					while( USART_GetFlagStatus(serial, USART_FLAG_TC) == RESET );
 				}
 				GPIO_WriteBit(LED_PORT, LED_PIN, Bit_RESET);
 			}
