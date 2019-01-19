@@ -75,10 +75,6 @@ int main()
 			{
 				GPIO_WriteBit(LED_PORT, LED_PIN, (BitAction) !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
 				{
-/*					*//* Write data to send buffer *//*
-					USART_SendData(DEBUG_UART, 0x61);
-					*//* Wait for char to be send *//*
-					while( USART_GetFlagStatus(DEBUG_UART, USART_FLAG_TC) == RESET );*/
 					static int i = 0;
 					printf("%d\r\n", i++);
 				}
