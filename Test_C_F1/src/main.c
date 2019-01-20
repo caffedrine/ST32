@@ -3,7 +3,6 @@
 #include "Printf.h"
 #include "TacoBus.h"
 
-
 #define DEBUG_UART          USART1
 #define DEBUG_UART_BAUD     115200
 
@@ -44,21 +43,23 @@ int main()
     SysTick_Init(1000);
     Led_Init(LED_PORT, LED_PIN);
     
-    TacoBus_Init();
+    /* UART GPPIO clocks */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     
     GPIO_InitTypeDef GPIO_InitStructure;
-    /* Enable GPIOC and GPIOE clock */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    /* Configure pins as AF pushpull */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    /** TX **/
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    /** RX **/
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_3;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+    
     Printf_Init(DEBUG_UART, DEBUG_UART_BAUD);
+    TacoBus_Init();
     
     TacoBus_GetFctInfo();
     
@@ -74,12 +75,12 @@ int main()
                 if( USART_GetFlagStatus(DEBUG_UART, USART_FLAG_RXNE) == SET )
                 {
                     GPIO_WriteBit(LED_PORT, LED_PIN, Bit_SET);
-                    
-                    uint16_t RecvByte = USART_ReceiveData(DEBUG_UART);
-                    USART_ClearFlag(DEBUG_UART, USART_FLAG_RXNE);
-                    /* Send back echo */
-                    printf("0x%02x ", RecvByte);
-                    
+                    {
+                        uint16_t RecvByte = USART_ReceiveData(DEBUG_UART);
+                        USART_ClearFlag(DEBUG_UART, USART_FLAG_RXNE);
+                        /* Send back echo */
+                        printf("0x%02x ", RecvByte);
+                    }
                     GPIO_WriteBit(LED_PORT, LED_PIN, Bit_RESET);
                 }
             }

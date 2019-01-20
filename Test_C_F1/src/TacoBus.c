@@ -8,8 +8,8 @@ uint8_t GetFctCommand[10] = {0x5c, 0x00, 0xCC, 0x00, 0x0A, 0x00, 0xFF, 0x00, 0x0
 uint8_t LowVoltageFctConfigACommand[14] = {0x5C, 0x00, 0xC6, 0x00, 0x0E, 0x00, 0xEE, 0x00, 0x00, 0x00, 0xFF, 0x02, 0x00, 0x00};
 uint8_t LowVoltageFctConfigBCommand[14] = {0x5C, 0x00, 0xD3, 0x00, 0x0E, 0x00, 0xEE, 0x00, 0x00, 0x00, 0xFF, 0x02, 0x01, 0x00};
 
-uint8_t TacoRxBuffer[40];
-USART_TypeDef *pUART;
+static uint8_t TacoRxBuffer[40];
+static USART_TypeDef *pUART;
 
 /* Private functions */
 void ProcessTacoPacket();
@@ -21,35 +21,38 @@ void TacoBus_Init()
     pUART = USART2;
     uint32_t BaudRate = 115200;
     
-    /* Enable GPIOC and GPIOE clock */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    /* Configure pins as AF pushpull */
-    GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    /* Enable clock */
+    if( pUART == USART1 )
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    else if( pUART == USART2 )
+        RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+    else if( pUART == USART3 )
+        RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+    else if( pUART == UART4 )
+        RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
+    else if( pUART == UART5 )
+        RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
+    
+    USART_DeInit(pUART);
     
     USART_InitTypeDef USART_InitStructure;
-    USART_ClockInitTypeDef USART_ClockInitStructure;
     USART_InitStructure.USART_BaudRate = BaudRate;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_Parity = USART_Parity_No;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-    USART_ClockInitStructure.USART_Clock = USART_Clock_Disable;
-    USART_ClockInitStructure.USART_CPOL = USART_CPOL_Low;
-    USART_ClockInitStructure.USART_CPHA = USART_CPHA_2Edge;
-    USART_ClockInitStructure.USART_LastBit = USART_LastBit_Disable;
-    
     USART_Init(pUART, &USART_InitStructure);
-    USART_ClockInit(pUART, &USART_ClockInitStructure);
+    
+    if( pUART == USART1 || pUART == USART2 || pUART == USART3 )
+    {
+        USART_ClockInitTypeDef USART_ClockInitStructure;
+        USART_ClockInitStructure.USART_Clock = USART_Clock_Disable;
+        USART_ClockInitStructure.USART_CPOL = USART_CPOL_Low;
+        USART_ClockInitStructure.USART_CPHA = USART_CPHA_2Edge;
+        USART_ClockInitStructure.USART_LastBit = USART_LastBit_Disable;
+        USART_ClockInit(pUART, &USART_ClockInitStructure);
+    }
     USART_Cmd(pUART, ENABLE);
 }
 
@@ -119,10 +122,6 @@ void ProcessTacoPacket()
 
 uint8_t SendUartData(uint8_t *data, uint8_t len)
 {
-    #ifdef DEBUG
-    printf("[TACOBUS] SEND: ");
-    #endif
-    
     for( int i = 0; i < len; i++ )
     {
         uint16_t ch = data[i];
@@ -131,13 +130,15 @@ uint8_t SendUartData(uint8_t *data, uint8_t len)
         USART_SendData(pUART, ch);
         /* Wait for data to be send */
         while( USART_GetFlagStatus(pUART, USART_FLAG_TC) == RESET );
-        
-        #ifdef DEBUG
-        printf("%c", 'a');
-        #endif
     }
+    
     #ifdef DEBUG
-    printf("\r\n");
+        printf("[TACOBUS] SEND: ");
+        for( int i = 0; i < len; i++ )
+        {
+            printf("0x%02x ", data[i]);
+        }
+        printf("\r\n");
     #endif
     
     return len;
