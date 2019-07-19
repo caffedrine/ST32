@@ -7,6 +7,12 @@
 
 #include <Derivative.h>
 
-void SysTick_Init(uint32_t ReloadMicros);
+/* Store tickcount globally */
+extern volatile uint64_t g_SysTick_CurrentTicks;
+
+void SysTick_Init(uint64_t ReloadMicros);
+
+/** MACROS **/
+#define Vfb_GetMillis()    g_SysTick_CurrentTicks
 
 #endif //_SYSTICK_H

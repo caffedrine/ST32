@@ -58,7 +58,7 @@ public:
 				continue;
 			
 			if( ( it.base()->ExecutionIntervalMillis == 0) ||
-				( SysTick_CurrentTicks - it.base()->LastExecutionMillis >= it.base()->ExecutionIntervalMillis)
+				(g_SysTick_CurrentTicks - it.base()->LastExecutionMillis >= it.base()->ExecutionIntervalMillis)
 			  )
 			{
 				if(it.base()->IsCustom)
@@ -72,7 +72,7 @@ public:
 					it.base()->ptr2driver->Tick();
 				}
 				
-				it.base()->LastExecutionMillis = SysTick_CurrentTicks;
+				it.base()->LastExecutionMillis = g_SysTick_CurrentTicks;
 			}
 		}
 	}

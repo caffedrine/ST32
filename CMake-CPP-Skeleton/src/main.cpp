@@ -1,4 +1,3 @@
-#include <Extensions.h>
 #include <Derivative.h>
 
 #include "TasksContainter.h"
@@ -72,7 +71,7 @@ void create_instances()
 
 int main()
 {
-	SysTick_Init();
+	SysTick_Init(1000);
 	
 	/* Create peripherals instances */
 	create_instances();
@@ -98,15 +97,15 @@ int main()
 	uint32_t PrevMillis = 0;
 	while(true)
 	{
-		if( SysTick_CurrentTicks - PrevMillis >= 1 )	/* is 1ms elapsed */
+		if( g_SysTick_CurrentTicks - PrevMillis >= 1 )	/* is 1ms elapsed */
 		{
-			PrevMillis = SysTick_CurrentTicks;
+			PrevMillis = g_SysTick_CurrentTicks;
 			uint32_t start_task_millis, end_task_millis;
-			start_task_millis = SysTick_CurrentTicks;
+			start_task_millis = g_SysTick_CurrentTicks;
 			{
 				tasks->Tick();
 			}
-			end_task_millis = SysTick_CurrentTicks;
+			end_task_millis = g_SysTick_CurrentTicks;
 
 			if( (end_task_millis - start_task_millis) > 1 )
 			{
@@ -116,5 +115,5 @@ int main()
 				}
 			}
 		}
-	}/*class*/
+	}/*while*/
 }/*main*/

@@ -5,9 +5,9 @@
 #define _PUSHBUTTON_H
 
 #include <Derivative.h>
-#include "IDriverTimed.h"
+#include <SysTick.h>
 
-#define Vfb_GetMillis()    SysTick_CurrentTicks
+#include "IDriverTimed.h"
 
 enum class PushButtonState
 {

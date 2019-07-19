@@ -7,6 +7,8 @@
 /* please refer to the startup file (startup_stm32f3xx.s).                    */
 /******************************************************************************/
 
+#include <SysTick.h>
+
 /**
  *  @brief On reset handler
  */
@@ -89,7 +91,7 @@ void PendSV_Handler(void)
 
 void SysTick_Handler(void)
 {
-	SysTick_CurrentTicks++;
+	g_SysTick_CurrentTicks++;
 }
 
 /******************************************************************************/

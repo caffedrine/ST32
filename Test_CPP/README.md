@@ -1,1 +1,0 @@
-## ST32 Cmake Project Skeleton

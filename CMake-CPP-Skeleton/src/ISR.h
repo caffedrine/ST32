@@ -19,9 +19,6 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 
-/* Systick */
-extern volatile uint32_t SysTick_CurrentTicks;
-
 #ifdef __cplusplus
 }
 #endif
