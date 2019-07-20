@@ -41,15 +41,15 @@ int main()
 	uint32_t PrevMillis = 0;
 	while(true)
 	{
-		if( g_SysTick_CurrentMillis - PrevMillis >= 1000 )	/* is 1ms elapsed */
+		if( g_SysTick_CurrentTicks - PrevMillis >= 1000 )	/* is 1ms elapsed */
 		{
-			PrevMillis = g_SysTick_CurrentMillis;
+			PrevMillis = g_SysTick_CurrentTicks;
 			uint32_t start_task_millis, end_task_millis;
-			start_task_millis = g_SysTick_CurrentMillis;
+			start_task_millis = g_SysTick_CurrentTicks;
 			{
 				GPIO_WriteBit(LED_PORT, LED_PIN, (BitAction) !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
 			}
-			end_task_millis = g_SysTick_CurrentMillis;
+			end_task_millis = g_SysTick_CurrentTicks;
 
 			if( (end_task_millis - start_task_millis) > 1 )
 			{

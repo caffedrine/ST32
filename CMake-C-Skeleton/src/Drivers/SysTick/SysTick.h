@@ -2,11 +2,16 @@
 // Created by curiosul on 05.01.19.
 //
 
-#ifndef _SYSTICK_H
-#define _SYSTICK_H
+#ifndef _SYSTICK_H_
+#define _SYSTICK_H_
 
 #include <Derivative.h>
 
-void SysTick_Init(uint32_t ReloadMicros);
+/* Current SysTick */
+extern volatile uint64_t g_SysTick_CurrentTicks;
 
+void SysTick_Init(uint64_t ReloadMicros);
+
+/** MACROS **/
+#define Vfb_GetMillis()    g_SysTick_CurrentTicks
 #endif //_SYSTICK_H

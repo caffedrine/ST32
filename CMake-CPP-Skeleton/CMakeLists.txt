@@ -80,7 +80,6 @@ add_compile_options(-ffunction-sections)
 add_compile_options(-O0)
 add_compile_options(-g -gdwarf-2)
 add_compile_options(-fno-exceptions)
-add_compile_options(-Wunused-variable)
 
 
 # Linker script path

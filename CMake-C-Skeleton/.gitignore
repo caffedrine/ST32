@@ -4,9 +4,8 @@
 ### EXCEPTIONS ###
 
 # Directories
-!builds/
 !docs/
-!includes/
+!include/
 !platforms/
 !scripts/
 !src/

@@ -1,11 +1,12 @@
 #include "ISR.h"
-
 /******************************************************************************/
 /* STM32 Peripheral Interrupt Handlers                                    */
 /* Add here the Interrupt Handlers for the used peripherals.                  */
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f3xx.s).                    */
 /******************************************************************************/
+
+#include <SysTick.h>
 
 /**
  *  @brief On reset handler
@@ -89,7 +90,7 @@ void PendSV_Handler(void)
 
 void SysTick_Handler(void)
 {
-	g_SysTick_CurrentMillis++;
+    g_SysTick_CurrentTicks++;
 }
 
 /******************************************************************************/

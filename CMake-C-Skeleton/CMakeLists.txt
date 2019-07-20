@@ -93,10 +93,10 @@ SET(CMAKE_C_FLAGS "-std=gnu99")
 # Retrieve correct startup ASM file name:
 string(TOLOWER ${FLASH_DENSITY} FLASH_DENSITY_LOWER)
 # Retrieve all sources # "platforms/${FAMILY}/Startup/*.s"
-file(GLOB_RECURSE SOURCES  "platforms/${FAMILY}/Startup/startup_${FLASH_DENSITY_LOWER}.s" "platforms/${FAMILY}/*.c" "includes/*.c" "includes/*.cpp" "src/*.cpp"  "src/*.c" )
+file(GLOB_RECURSE SOURCES  "platforms/${FAMILY}/Startup/startup_${FLASH_DENSITY_LOWER}.s" "platforms/${FAMILY}/*.c" "include/*.c" "include/*.cpp" "src/*.cpp"  "src/*.c" )
 
 #Retrieve all locations of headers
-file(GLOB_RECURSE HEADERS "includes/*.h"  "src/*.h" "platforms/${FAMILY}/*.h")
+file(GLOB_RECURSE HEADERS "include/*.h"  "src/*.h" "platforms/${FAMILY}/*.h")
 set (INCLUDE_DIRS "")
 foreach (_headerFile ${HEADERS})
     get_filename_component(_dir ${_headerFile} PATH)
@@ -126,9 +126,9 @@ add_custom_command(TARGET "${EXE_NAME}.elf" POST_BUILD
         COMMENT "Building ${PROJECT_NAME}.bin and ${PROJECT_NAME}.hex"
 
         # Copy files to a custom build directory
-        COMMAND ${CMAKE_COMMAND} -E copy ${ELF_FILE} "${ROOT_PROJ}/builds/${CHIP}/${EXE_NAME}.elf"
-        COMMAND ${CMAKE_COMMAND} -E copy ${HEX_FILE} "${ROOT_PROJ}/builds/${CHIP}/${EXE_NAME}.hex"
-        COMMAND ${CMAKE_COMMAND} -E copy ${BIN_FILE} "${ROOT_PROJ}/builds/${CHIP}/${EXE_NAME}.bin"
+        COMMAND ${CMAKE_COMMAND} -E copy ${ELF_FILE} "${ROOT_PROJ}/build/${CHIP}/${EXE_NAME}.elf"
+        COMMAND ${CMAKE_COMMAND} -E copy ${HEX_FILE} "${ROOT_PROJ}/build/${CHIP}/${EXE_NAME}.hex"
+        COMMAND ${CMAKE_COMMAND} -E copy ${BIN_FILE} "${ROOT_PROJ}/build/${CHIP}/${EXE_NAME}.bin"
         COMMENT "Objcopy: Copying executables to build/"
 
         # Display sizes
