@@ -36,9 +36,19 @@
 /* General Purpose Input/Output Driver */
     #include "stm32f10x_gpio.h"
 
+#elif defined(stm32f4)
+    #include "stm32f4xx.h"
+    #include "system_stm32f4xx.h"
+/* Reset and Clock Controller driver */
+    #include <stm32f4xx_rcc.h>
+/* General Purpose Input/Output Driver */
+    #include "stm32f4xx_gpio.h"
+/* USART driver */
+    #include "stm32f4xx_usart.h"
 
 #else
     #error "No target family specified!"
+
 #endif/*Target family check*/
 
 #endif/*_DERIVATIVE_H_ */

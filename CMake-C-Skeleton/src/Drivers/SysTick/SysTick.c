@@ -20,8 +20,6 @@ void SysTick_Init(uint64_t ReloadMicros)
     g_SysTick_CurrentTicks = 0;
 
 	/* Configure SysTick */
-	RCC_ClocksTypeDef RCC_Clocks;
-	RCC_GetClocksFreq (&RCC_Clocks);
-	(void) SysTick_Config (RCC_Clocks.HCLK_Frequency / ReloadMicros);
+    assert_param(SysTick_Config (SystemCoreClock/ 3 /*??*/ / ReloadMicros) );
     SysTick_IsInitialized = true;
 }

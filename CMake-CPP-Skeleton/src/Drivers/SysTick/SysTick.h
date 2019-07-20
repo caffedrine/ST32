@@ -14,10 +14,10 @@ extern "C" {
 /* Store tickcount globally */
 extern volatile uint64_t g_SysTick_CurrentTicks;
 
-extern void SysTick_Init(uint64_t ReloadMicros);
+extern void SysTick_Init(uint32_t ReloadMicros);
 
 /** MACROS **/
-#define Vfb_GetMillis()    g_SysTick_CurrentTicks
+#define Vfb_GetMillis()    (g_SysTick_CurrentTicks*2)
 
 #ifdef __cplusplus
 }

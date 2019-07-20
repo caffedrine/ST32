@@ -61,7 +61,7 @@ void create_instances()
 int main()
 {
     /* Init system tick counter */
-	SysTick_Init(2000);
+	SysTick_Init(1000);
 	
 	/* Create peripherals instances */
 	create_instances();
