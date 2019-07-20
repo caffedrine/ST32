@@ -53,11 +53,13 @@
 #ifndef __STM32F30x_H
 #define __STM32F30x_H
 
-#include "stm32_assert.h"
 
 #ifdef __cplusplus
  extern "C" {
 #endif /* __cplusplus */
+  
+
+#include "stm32_assert.h"
   
 /** @addtogroup Library_configuration_section
   * @{
