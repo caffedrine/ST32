@@ -9,7 +9,7 @@ volatile uint64_t g_SysTick_CurrentTicks = 0;
 /* Local var */
 bool SysTick_IsInitialized = false;
 
-void SysTick_Init(uint64_t ReloadMicros)
+void SysTick_Init(uint32_t ReloadMicros)
 {
     if(SysTick_IsInitialized == true)
     {
@@ -18,8 +18,10 @@ void SysTick_Init(uint64_t ReloadMicros)
 
     /* Init counter */
     g_SysTick_CurrentTicks = 0;
-
+    
 	/* Configure SysTick */
-    assert_param(SysTick_Config (SystemCoreClock/ 3 /*??*/ / ReloadMicros) );
+    RCC_ClocksTypeDef RCC_Clocks;
+    RCC_GetClocksFreq (&RCC_Clocks);
+    assert_param(SysTick_Config (RCC_Clocks.HCLK_Frequency / ReloadMicros) );
     SysTick_IsInitialized = true;
 }

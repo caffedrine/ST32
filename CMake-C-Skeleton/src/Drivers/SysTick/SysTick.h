@@ -10,7 +10,7 @@
 /* Current SysTick */
 extern volatile uint64_t g_SysTick_CurrentTicks;
 
-void SysTick_Init(uint64_t ReloadMicros);
+void SysTick_Init(uint32_t ReloadMicros);
 
 /** MACROS **/
 #define Vfb_GetMillis()    g_SysTick_CurrentTicks

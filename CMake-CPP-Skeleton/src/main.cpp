@@ -60,6 +60,8 @@ void create_instances()
 
 int main()
 {
+	/* Configure system clock */
+    RCC_SYSCLKConfig( RCC_SYSCLKSource_HSI );
     /* Init system tick counter */
 	SysTick_Init(1000);
 	
